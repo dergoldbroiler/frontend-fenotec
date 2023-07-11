@@ -1,7 +1,7 @@
 'use client';
 import React, {useState, useEffect, use} from 'react'
 import {toggleModal} from '../services/modalhandler';
-import { getJob } from '../services/datahandler';
+import { Editable } from './Editable/Editable';
 
 export const Singledataset = ({datasetID,activeDataset}) => {
 
@@ -42,7 +42,7 @@ export const Singledataset = ({datasetID,activeDataset}) => {
                                    return (
                                    <tr key={index}>
                                     <td className="job_key">{element[0]}</td>
-                                    <td className="job_value">{element[1]}</td>
+                                    <td className="job_value"><Editable type="text" inital_value={element[1]} /></td>
                                     
                                    </tr>
                                    )
