@@ -8,7 +8,7 @@ export const WindowcloseEvent = () => {
           e.preventDefault();
     
           console.log('beforeunload event triggered');
-          fetch('http://localhost:3001/api/orders/unlock').then(res => res.json()).then(data => {
+          fetch('https://app.fenotec.dergoldbroiler.de/wp-json/wp/v2/jobs/unlock/all/').then(res => res.json()).then(data => {
            console.log('unlocking all datasets');
         });
         };
