@@ -61,6 +61,24 @@ export const getAllJobs = () => {
   })
 };
 
+
+export const getJob = (datasetID) => {
+  return new Promise((resolve, reject) => {
+
+    let jobmeta = [];
+    let fetch_url = 'https://app.fenotec.dergoldbroiler.de/wp-json/wp/v2/job/'+datasetID;
+    fetch(fetch_url).then(res => res.json()).then(data => {
+      
+      let postmeta = data.acf;
+      postmeta.id = data[0].ID;
+    
+      jobmeta.push(postmeta);
+     
+      resolve(jobmeta);
+    })
+  })
+};
+
 export const updateEntry = (entry) => {
 
   const result = data.map( element => {

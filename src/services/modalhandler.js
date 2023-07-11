@@ -9,10 +9,10 @@ export const toggleModal = (modalName, action, datasetId) => {
     });
     
    } else {
-    let fetch_url = 'https://app.fenotec.dergoldbroiler.de/wp-json/wp/v2/job/'+datasetId;
-    fetch(fetch_url).then(
+   // let fetch_url = 'https://app.fenotec.dergoldbroiler.de/wp-json/wp/v2/job/'+datasetId;
+   // fetch(fetch_url).then(
         modal.classList.add('d-block','show')
-    );
+    //);
    }
 
     //.show d-block

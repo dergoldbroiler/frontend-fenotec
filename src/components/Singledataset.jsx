@@ -1,35 +1,28 @@
 'use client';
 import React, {useState, useEffect, use} from 'react'
 import {toggleModal} from '../services/modalhandler';
+import { getJob } from '../services/datahandler';
 
-
-export const Singledataset = ({datasetID}) => {
+export const Singledataset = ({datasetID,activeDataset}) => {
 
    
-
+/*
    const [activeDataset, setActiveDataset] = useState();
-   const [mappedDataset, setMappedDataset] = useState();
 
    useEffect(() => {
-    if(!datasetID) return;
-    
-    let fetchURL = 'https://app.fenotec.dergoldbroiler.de/wp-json/wp/v2/job/'+datasetID;
 
-    /*if(location.host.search('localhost') < 0) {
-        fetchURL = 'https://app.fenotec.dergoldbroiler.de/api/orders/order?id='+datasetID;
-    }*/
+    if(!datasetID) return;
+
+    getJob(datasetID).then(data => {
+        console.log('getJob',data[0]);
+        setActiveDataset(Object.keys(data[0]));
+        console.log('AS',activeDataset);
+    });
     
-    if(!fetchURL) return;
-    
-    fetch(fetchURL).then(
-        res => res.json()
-    ).then(
-        data => {
-            setActiveDataset(data);
-            setMappedDataset(Object.keys(data));
-        }
-    )
-   }, [datasetID]);
+   
+   }, []);
+
+*/
 
     return (
         <div className="modal fade" id="modal_singledataset" aria-hidden="true" aria-labelledby="exampleModalToggleLabel">
@@ -40,22 +33,22 @@ export const Singledataset = ({datasetID}) => {
                     <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" onClick={() => toggleModal('modal_singledataset','hide',datasetID)}></button>
                     </div>
                     <div className="modal-body">
-                        <table className="table table-dark table-striped">
+                        <table className="table table-light table-striped table-secondary">
                             <tbody>
                         
-                        {
-                          
-                          mappedDataset &&
-                          mappedDataset.map((key, index) => {
-                                return(
-                                    <tr key={index}>
-                                        <td>{key}</td>
-                                        <td>{mappedDataset[key]}</td>
-                                    </tr>
-                                )
-                            })
-                        }
-                            </tbody>
+                        { 
+                                activeDataset &&
+                                activeDataset.map((element, index) => {
+                                   return (
+                                   <tr key={index}>
+                                    <td className="job_key">{element[0]}</td>
+                                    <td className="job_value">{element[1]}</td>
+                                    
+                                   </tr>
+                                   )
+                                })
+                        }                            
+                        </tbody>
                         </table>
                     </div>
                     <div className="modal-footer">
