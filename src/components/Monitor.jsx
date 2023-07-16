@@ -2,8 +2,9 @@ import { useState, useEffect, use } from "react";
 import { Overview } from "../components/Overview";
 import {WindowcloseEvent} from '../components/WindowcloseEvent';
 import {Singledataset} from '../components/Singledataset';
-import { getAllJobs, getJob } from "../services/datahandler";
+import { getAllJobs, getJob, updateJob } from "../services/datahandler";
 import {toggleModal} from '../services/modalhandler';
+
 
 const Monitor = () => {
 
@@ -19,8 +20,9 @@ const Monitor = () => {
         
         getAllJobs().then(
                 data => { 
-                    
-                    setDatastore(data)
+                    setDatastore(data);
+                    console.log('data',data[0]);
+                   // setActiveDataset(data[0]);
                 }
             )
     }, []);
@@ -48,11 +50,21 @@ const Monitor = () => {
         getJob(id).then(data => {
             toggleModal('modal_singledataset','show')
             setActiveDataset(Object.entries(data[0]));
-            console.log('AS',activeDataset);
+            
         });
-
-        
       
+    }
+
+    const handleJobUpdate = (e) => {    
+        updateJob(32, 'kunde', 'trötzel').then(data => {
+            console.log('updateJob',data);
+        });
+    }
+
+    const handleUpdate = (id, key, value) => {    
+        updateJob(id, key, value).then(data => {
+            console.log('updateJob',data);
+        });
     }
 
     const handeRefusedClick = () => {
@@ -65,10 +77,12 @@ const Monitor = () => {
         <div>
             {/* unlocks datasets on window close */}
             <WindowcloseEvent /> 
-            <Singledataset datasetID={activeDatasetID}  activeDataset={activeDataset}/>        
+            <Singledataset datasetID={activeDatasetID}  activeDataset={activeDataset} handleUpdate={handleUpdate}/>        
         
             <Overview datastore={datastore} clickHandlerOverview={clickHandlerOverview} clickHandlerRefuse={handeRefusedClick}/>
             
+
+            <button className="btn btn-info" onClick={handleJobUpdate}>Testjob-Update</button>
         </div>
     )
 }    

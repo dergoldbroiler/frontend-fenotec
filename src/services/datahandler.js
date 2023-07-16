@@ -79,6 +79,29 @@ export const getJob = (datasetID) => {
   })
 };
 
+export const updateJob = (datasetID, key, value) => {
+  return new Promise((resolve, reject) => {
+  
+    let fetch_url = 'https://app.fenotec.dergoldbroiler.de/wp-json/wp/v2/jobs/update/'+datasetID+'/?key='+key+'&value='+value;
+    console.log(fetch_url);
+
+    fetch(fetch_url, {
+      method: 'POST',
+      credentials: 'same-origin', // <-- make sure to include credentials
+      headers:{
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          //'Authorization': 'Bearer ' + token  <-- not needed, WP does not check for it
+      },
+      body: JSON.stringify({key: value})
+    }).then(res => res.json()).then(data => {
+      console.log(data);
+    });
+
+   
+  })
+};
+
 export const updateEntry = (entry) => {
 
   const result = data.map( element => {

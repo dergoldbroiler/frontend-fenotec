@@ -24,7 +24,6 @@ export const Overview = ({datastore, clickHandlerOverview, clickHandlerRefuse}) 
 
         { datastore.map((element, index) => {
 
-            console.log(element)
             if( element.locked === true ) {
                 return(
                     <tr key={element.id} className="red-border red" onClick={clickHandlerRefuse}>

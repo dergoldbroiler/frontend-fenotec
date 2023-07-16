@@ -1,28 +1,11 @@
-'use client';
 import React, {useState, useEffect, use} from 'react'
 import {toggleModal} from '../services/modalhandler';
 import { Editable } from './Editable/Editable';
 
-export const Singledataset = ({datasetID,activeDataset}) => {
+export const Singledataset = ({datasetID,activeDataset, handleUpdate}) => {
 
-   
-/*
-   const [activeDataset, setActiveDataset] = useState();
 
-   useEffect(() => {
 
-    if(!datasetID) return;
-
-    getJob(datasetID).then(data => {
-        console.log('getJob',data[0]);
-        setActiveDataset(Object.keys(data[0]));
-        console.log('AS',activeDataset);
-    });
-    
-   
-   }, []);
-
-*/
 
     return (
         <div className="modal fade" id="modal_singledataset" aria-hidden="true" aria-labelledby="exampleModalToggleLabel">
@@ -42,8 +25,14 @@ export const Singledataset = ({datasetID,activeDataset}) => {
                                    return (
                                    <tr key={index}>
                                     <td className="job_key">{element[0]}</td>
-                                    <td className="job_value"><Editable type="text" inital_value={element[1]} /></td>
-                                    
+                                    <td className="job_value">
+                                        {
+                                        element[0] === 'einbau' || element[0] === 'versand' || element[0] === 'bestellung_vom'  ? 
+                                            <Editable type="date" datasetID={datasetID} element_key={element[0]} inital_value={element[1]} handleUpdate={handleUpdate} /> 
+                                        :
+                                            <Editable type="text" datasetID={datasetID} element_key={element[0]} inital_value={element[1]} handleUpdate={handleUpdate} />
+                                        }   
+                                    </td>
                                    </tr>
                                    )
                                 })
