@@ -4,6 +4,7 @@ import {WindowcloseEvent} from '../components/WindowcloseEvent';
 import {Singledataset} from '../components/Singledataset';
 import { getAllJobs, getJob, updateJob } from "../services/datahandler";
 import {toggleModal} from '../services/modalhandler';
+import { da } from "date-fns/locale";
 
 
 const Monitor = () => {
@@ -17,19 +18,22 @@ const Monitor = () => {
     /* first fetch */
     useEffect(() => {
         if(datastore) return;
-        
+       
         getAllJobs().then(
                 data => { 
                     setDatastore(data);
-                    console.log('data',data[0]);
-                   // setActiveDataset(data[0]);
+                  //  setActiveDataset(Object.entries(data[0]));
+              
                 }
             )
-    }, []);
+    }, [datastore]);
 
 
     /* refetch every 10 seconds */
     useEffect(() => {
+        if(datastore){
+         console.log('datastore',datastore);
+        }
         const interval = setInterval(() => {
          
             getAllJobs().then(
@@ -40,16 +44,18 @@ const Monitor = () => {
 
         }, 3000);
         return () => clearInterval(interval);
-    }, []);
+    }, [datastore]);
 
 
     const clickHandlerOverview = (e, id, index) => {
         setActiveDatasetID(id);
         setLocked(!locked);
-
+        console.log('clickHandlerOverview',activeDataset);
         getJob(id).then(data => {
-            toggleModal('modal_singledataset','show')
-            setActiveDataset(Object.entries(data[0]));
+            toggleModal('modal_singledataset','show');
+            setDatastore(data);
+            setActiveDatasetID(id);
+           setActiveDataset(Object.entries(data[0]));
             
         });
       
@@ -77,7 +83,7 @@ const Monitor = () => {
         <div>
             {/* unlocks datasets on window close */}
             <WindowcloseEvent /> 
-            <Singledataset datasetID={activeDatasetID}  activeDataset={activeDataset} handleUpdate={handleUpdate}/>        
+            <Singledataset datastore={datastore} datasetID={activeDatasetID}  handleUpdate={handleUpdate}/>        
         
             <Overview datastore={datastore} clickHandlerOverview={clickHandlerOverview} clickHandlerRefuse={handeRefusedClick}/>
             

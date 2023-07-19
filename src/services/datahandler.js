@@ -79,11 +79,39 @@ export const getJob = (datasetID) => {
   })
 };
 
+
+
+export const getCustomer = (datasetID) => {
+  return new Promise((resolve, reject) => {
+    if(!datasetID){
+      resolve('Kunde im Backend nicht angelegt');
+     } else {
+    let fetch_url = 'https://app.fenotec.dergoldbroiler.de/wp-json/wp/v2/kunde/'+datasetID;
+    fetch(fetch_url).then(res => res.json()).then(data => {
+       resolve(data.title.rendered);
+    })
+  }
+  })
+};
+
+export const getShippping = (datasetID) => {
+  return new Promise((resolve, reject) => {
+    if(!datasetID){
+      resolve('Kunde nicht gefunden');
+     } else {
+    let fetch_url = 'https://app.fenotec.dergoldbroiler.de/wp-json/wp/v2/versand/'+datasetID;
+    fetch(fetch_url).then(res => res.json()).then(data => {
+       resolve(data.title.rendered);
+    })
+  }
+  })
+};
+
 export const updateJob = (datasetID, key, value) => {
   return new Promise((resolve, reject) => {
   
     let fetch_url = 'https://app.fenotec.dergoldbroiler.de/wp-json/wp/v2/jobs/update/'+datasetID+'/?key='+key+'&value='+value;
-    console.log(fetch_url);
+    
 
     fetch(fetch_url, {
       method: 'POST',
@@ -95,7 +123,7 @@ export const updateJob = (datasetID, key, value) => {
       },
       body: JSON.stringify({key: value})
     }).then(res => res.json()).then(data => {
-      console.log(data);
+    
     });
 
    

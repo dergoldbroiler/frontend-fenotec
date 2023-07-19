@@ -1,11 +1,10 @@
 import { useState, useEffect } from "react"
-import DatePicker from "react-datepicker";
 import { format } from 'date-fns';
 import { DayPicker } from 'react-day-picker';
 import 'react-day-picker/dist/style.css';
 import "react-datepicker/dist/react-datepicker.css";
 import { Textinput } from "./Textinput"
-
+import { Toggle } from './Toggle';
 export const Editable = ({ type, datasetID, inital_value, element_key, handleUpdate }) => {
 
     const [value, setValue] = useState(inital_value);
@@ -31,8 +30,14 @@ export const Editable = ({ type, datasetID, inital_value, element_key, handleUpd
     }
 
     const onTextinputChange = (e) => {  
-        handleUpdate(e, datasetID, element_key, e.target.value);
+        handleUpdate(datasetID, element_key, e.target.value);
         setValue(e.target.value);
+    }
+
+    const onBooleanChange = (e, val) => {  
+        let val_num =val === true ? 1 : 0;
+        setValue(val_num);
+        handleUpdate(datasetID, element_key, val_num);
     }
 
     const onDateChange = (date) => {  
@@ -40,14 +45,16 @@ export const Editable = ({ type, datasetID, inital_value, element_key, handleUpd
         setStartDate(date);
 
     }
+
+    if(inital_value === true || inital_value === false) return ( <Toggle active={value} onChange={onBooleanChange}/> )
+
   
     switch (type) {
         case 'text':
             return <Textinput tabIndex="1" value={value} onChange={onTextinputChange} onBlur={onTextinputChange}/>
             break;
         case 'date':
-            //return <DatePicker selected={startDate} onChange={(date) => onDateChange(date)} />
-            return <DayPicker
+                 return <DayPicker
             mode="single"
             selected={startDate}
             onSelect={(date) => onDateChange(date)}

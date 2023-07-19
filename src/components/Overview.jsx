@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react'
-
+import { Customername } from './Views/Customername';
 export const Overview = ({datastore, clickHandlerOverview, clickHandlerRefuse}) => {
     
 
@@ -23,7 +23,7 @@ export const Overview = ({datastore, clickHandlerOverview, clickHandlerRefuse}) 
         <tbody>
 
         { datastore.map((element, index) => {
-
+            console.log('ELE',element.kunde);
             if( element.locked === true ) {
                 return(
                     <tr key={element.id} className="red-border red" onClick={clickHandlerRefuse}>
@@ -44,7 +44,7 @@ export const Overview = ({datastore, clickHandlerOverview, clickHandlerRefuse}) 
                         <td>{element.versand}</td>
                         <td>{element.versandart}</td>
                         <td>{element.einbau}</td>
-                        <td>{element.kunde}</td>
+                        <td>{element.kunde} <Customername id={element.kunde} /></td>
                         <td>{element.tankform}</td>
                         <td>{element.kunststoff}</td>
                         <td>{element.volumen}</td>

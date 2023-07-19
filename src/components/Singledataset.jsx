@@ -2,7 +2,7 @@ import React, {useState, useEffect, use} from 'react'
 import {toggleModal} from '../services/modalhandler';
 import { Editable } from './Editable/Editable';
 
-export const Singledataset = ({datasetID,activeDataset, handleUpdate}) => {
+export const Singledataset = ({datastore, datasetID,activeDataset, handleUpdate}) => {
 
 
 
@@ -19,24 +19,31 @@ export const Singledataset = ({datasetID,activeDataset, handleUpdate}) => {
                         <table className="table table-light table-striped table-secondary">
                             <tbody>
                         
-                        { 
-                                activeDataset &&
-                                activeDataset.map((element, index) => {
-                                   return (
-                                   <tr key={index}>
-                                    <td className="job_key">{element[0]}</td>
-                                    <td className="job_value">
-                                        {
-                                        element[0] === 'einbau' || element[0] === 'versand' || element[0] === 'bestellung_vom'  ? 
-                                            <Editable type="date" datasetID={datasetID} element_key={element[0]} inital_value={element[1]} handleUpdate={handleUpdate} /> 
-                                        :
-                                            <Editable type="text" datasetID={datasetID} element_key={element[0]} inital_value={element[1]} handleUpdate={handleUpdate} />
-                                        }   
-                                    </td>
-                                   </tr>
-                                   )
-                                })
-                        }                            
+                       
+                        {
+                            datastore &&
+                            datastore.map((element, index) => {
+                                if(element.id === datasetID ){
+                                   
+                                   return Object.entries(element).map((single, index) => {
+                                      
+                                        return (
+                                        <tr key={index}>
+                                         <td className="job_key">{single[0]}</td>
+                                         <td className="job_value">
+                                             {
+                                             single[0] === 'einbau' || single[0] === 'versand' || single[0] === 'bestellung_vom'  ? 
+                                                 <Editable type="date" datasetID={datasetID} element_key={single[0]} inital_value={single[1]} handleUpdate={handleUpdate} /> 
+                                             :
+                                                 <Editable type="text" datasetID={datasetID} element_key={single[0]} inital_value={single[1]} handleUpdate={handleUpdate} />
+                                             }   
+                                         </td>
+                                        </tr>
+                                        )
+                                     })
+                                }
+                            })
+                        }                           
                         </tbody>
                         </table>
                     </div>
