@@ -88,7 +88,7 @@ const Monitor = () => {
             <Overview datastore={datastore} clickHandlerOverview={clickHandlerOverview} clickHandlerRefuse={handeRefusedClick}/>
             
 
-            <button className="btn btn-info" onClick={handleJobUpdate}>Testjob-Update</button>
+        
         </div>
     )
 }    

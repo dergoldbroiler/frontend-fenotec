@@ -4,6 +4,7 @@ import { DayPicker } from 'react-day-picker';
 import 'react-day-picker/dist/style.css';
 import "react-datepicker/dist/react-datepicker.css";
 import { Textinput } from "./Textinput"
+import { Textarea } from "./Textarea";
 import { Toggle } from './Toggle';
 export const Editable = ({ type, datasetID, inital_value, element_key, handleUpdate }) => {
 
@@ -53,6 +54,9 @@ export const Editable = ({ type, datasetID, inital_value, element_key, handleUpd
         case 'text':
             return <Textinput tabIndex="1" value={value} onChange={onTextinputChange} onBlur={onTextinputChange}/>
             break;
+        case 'textarea':
+            return <Textarea onChange={onTextinputChange} onBlur={onTextinputChange} value={value} />
+            break;    
         case 'date':
                  return <DayPicker
             mode="single"

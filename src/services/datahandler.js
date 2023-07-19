@@ -94,10 +94,10 @@ export const getCustomer = (datasetID) => {
   })
 };
 
-export const getShippping = (datasetID) => {
+export const getShipping = (datasetID) => {
   return new Promise((resolve, reject) => {
     if(!datasetID){
-      resolve('Kunde nicht gefunden');
+      resolve('Versandart nicht im Backend angelegt');
      } else {
     let fetch_url = 'https://app.fenotec.dergoldbroiler.de/wp-json/wp/v2/versand/'+datasetID;
     fetch(fetch_url).then(res => res.json()).then(data => {

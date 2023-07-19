@@ -35,6 +35,9 @@ export const Singledataset = ({datastore, datasetID,activeDataset, handleUpdate}
                                              single[0] === 'einbau' || single[0] === 'versand' || single[0] === 'bestellung_vom'  ? 
                                                  <Editable type="date" datasetID={datasetID} element_key={single[0]} inital_value={single[1]} handleUpdate={handleUpdate} /> 
                                              :
+                                                single[0] === 'notizen' ?
+                                                 <Editable type="textarea" datasetID={datasetID} element_key={single[0]} inital_value={single[1]} handleUpdate={handleUpdate} />
+                                                 :
                                                  <Editable type="text" datasetID={datasetID} element_key={single[0]} inital_value={single[1]} handleUpdate={handleUpdate} />
                                              }   
                                          </td>
