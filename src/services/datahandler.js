@@ -40,12 +40,66 @@ export const getEntry = (id) => {
 
 }
 
+
+export const getLabels = () => {
+  return new Promise((resolve, reject) => {
+
+    let labels = [];
+
+    fetch('https://app.fenotec.dergoldbroiler.de/wp-json/wp/v2/labels?acf_format=standard').then(res => res.json()).then(data => {
+      
+    
+
+      resolve(data);
+    })
+  })
+};
+
+
+export const getLocalLabels = () => {
+  return JSON.parse(localStorage.getItem('labels'));
+};
+
+
 export const getAllJobs = () => {
   return new Promise((resolve, reject) => {
 
     let jobmeta = [];
 
     fetch('https://app.fenotec.dergoldbroiler.de/wp-json/wp/v2/jobs?acf_format=standard').then(res => res.json()).then(data => {
+      
+
+      data.forEach( element => {
+
+        let postmeta = element.acf;
+        postmeta.id = element.ID;
+
+        jobmeta.push(postmeta);
+      })
+
+      resolve(jobmeta);
+    })
+  })
+};
+
+
+/*
+awaits an filter object {kunde:xxx, versand:xxx}
+*/
+export const getFilteredJobs = (filter) => {
+  return new Promise((resolve, reject) => {
+
+    let jobmeta = [];
+    let fetchurl = 'https://app.fenotec.dergoldbroiler.de/wp-json/wp/v2/jobs?acf_format=standard';
+    
+    if(filter.kunde){
+      var filterkey = 'kunde';
+      var filtervalue = filter.kunde;
+      fetchurl = 'https://app.fenotec.dergoldbroiler.de/wp-json/wp/v2/jobs?acf_format=standard&'+filterkey+'='+filtervalue;
+    }
+
+
+    fetch(fetchurl).then(res => res.json()).then(data => {
       
 
       data.forEach( element => {
@@ -74,11 +128,28 @@ export const getJob = (datasetID) => {
     
       jobmeta.push(postmeta);
      
-      resolve(jobmeta);
+      resolve(jobmeta); 
     })
   })
 };
 
+
+export const getJobFull = (datasetID) => {
+  return new Promise((resolve, reject) => {
+
+    let jobmeta = [];
+    let fetch_url = 'https://app.fenotec.dergoldbroiler.de/wp-json/wp/v2/job/'+datasetID;
+    fetch(fetch_url).then(res => res.json()).then(data => {
+      
+      let postmeta = data.acf_objects;
+      postmeta.id = data[0].ID;
+    
+      jobmeta.push(postmeta);
+     
+      resolve(jobmeta);
+    })
+  })
+};
 
 
 export const getCustomer = (datasetID) => {
@@ -104,6 +175,22 @@ export const getShipping = (datasetID) => {
        resolve(data.title.rendered);
     })
   }
+  })
+};
+
+
+export const getOptions = (endpoint) => {
+  return new Promise((resolve, reject) => {
+   
+    let fetch_url = 'https://app.fenotec.dergoldbroiler.de/wp-json/wp/v2/'+endpoint;
+    fetch(fetch_url).then(res => res.json()).then(data => {
+       let options = [];
+        data.forEach( element => {
+          options.push({value: element.id, label: element.title.rendered});
+        });
+        resolve(options);
+    })
+  
   })
 };
 

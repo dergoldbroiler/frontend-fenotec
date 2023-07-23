@@ -2,8 +2,49 @@ import React, {useState, useEffect, use} from 'react'
 import {toggleModal} from '../services/modalhandler';
 import { Editable } from './Editable/Editable';
 
+
+
 export const Singledataset = ({datastore, datasetID,activeDataset, handleUpdate}) => {
 
+    
+
+    const Edit = (Obj) => {
+
+        let map = Obj.map((single, index) => {
+              
+            
+   
+            let editable;
+            if(single[0] === 'einbau' || single[0] === 'versand' || single[0] === 'bestellung_vom'){
+                editable = <Editable type="date" datasetID={datasetID} element_key={single[0]} inital_value={single[1]} handleUpdate={handleUpdate} /> 
+            }
+            else if (single[0] === 'notizen') {
+                editable = <Editable type="textarea" datasetID={datasetID} element_key={single[0]} inital_value={single[1]} handleUpdate={handleUpdate} />
+            }
+            else if(single[0] === 'versandart' || single[0] === 'kunde') {
+                let endpoint;
+                single[0] === 'versandart' ? endpoint = 'versand' : endpoint = 'kunde';
+                editable = <Editable type="select" datasetID={datasetID} element_key={single[0]} inital_value={single[1]} handleUpdate={handleUpdate} extraconf={{endpoint: endpoint}}/>
+            }
+            else {
+                editable = <Editable type="text" datasetID={datasetID} element_key={single[0]} inital_value={single[1]} handleUpdate={handleUpdate} />
+            }
+
+            return (
+            <tr key={index}>
+             <td className="job_key">{single[0]}</td>
+             <td className="job_value">
+                 {
+                 editable
+                    
+                 }   
+             </td>
+            </tr>
+            )
+         })
+
+         return map;
+    }
 
 
 
@@ -24,26 +65,8 @@ export const Singledataset = ({datastore, datasetID,activeDataset, handleUpdate}
                             datastore &&
                             datastore.map((element, index) => {
                                 if(element.id === datasetID ){
-                                   
-                                   return Object.entries(element).map((single, index) => {
-                                      
-                                        return (
-                                        <tr key={index}>
-                                         <td className="job_key">{single[0]}</td>
-                                         <td className="job_value">
-                                             {
-                                             single[0] === 'einbau' || single[0] === 'versand' || single[0] === 'bestellung_vom'  ? 
-                                                 <Editable type="date" datasetID={datasetID} element_key={single[0]} inital_value={single[1]} handleUpdate={handleUpdate} /> 
-                                             :
-                                                single[0] === 'notizen' ?
-                                                 <Editable type="textarea" datasetID={datasetID} element_key={single[0]} inital_value={single[1]} handleUpdate={handleUpdate} />
-                                                 :
-                                                 <Editable type="text" datasetID={datasetID} element_key={single[0]} inital_value={single[1]} handleUpdate={handleUpdate} />
-                                             }   
-                                         </td>
-                                        </tr>
-                                        )
-                                     })
+                                   return Edit(Object.entries(element));
+                                 
                                 }
                             })
                         }                           

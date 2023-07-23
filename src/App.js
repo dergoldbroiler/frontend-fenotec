@@ -3,10 +3,16 @@ import Monitor from './components/Monitor'
 
 import {useEffect, useState} from 'react'
 import "bootstrap/dist/css/bootstrap.css";
-import { getAllJobs } from './services/datahandler';
+import { getLabels } from './services/datahandler';
 
 export default function Home() {
 
+
+  useEffect(() => {
+    getLabels().then(data => {
+      console.log('Labels', data);
+    })  
+  }, [])
 
 
   return (

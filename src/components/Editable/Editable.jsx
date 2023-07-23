@@ -6,11 +6,16 @@ import "react-datepicker/dist/react-datepicker.css";
 import { Textinput } from "./Textinput"
 import { Textarea } from "./Textarea";
 import { Toggle } from './Toggle';
-export const Editable = ({ type, datasetID, inital_value, element_key, handleUpdate }) => {
+import { Select } from "./Select";
+import { getLocalLabels } from '../../services/datahandler';
+
+export const Editable = ({ type, datasetID, inital_value, element_key, handleUpdate, extraconf }) => {
 
     const [value, setValue] = useState(inital_value);
     const [isDate, setIsDate] = useState(false); //one state for alle 3 datefields, quick and dirty
     const [startDate, setStartDate] = useState(new Date());
+
+    const labels = getLocalLabels();
 
     useEffect(() => {
        
@@ -57,6 +62,8 @@ export const Editable = ({ type, datasetID, inital_value, element_key, handleUpd
         case 'textarea':
             return <Textarea onChange={onTextinputChange} onBlur={onTextinputChange} value={value} />
             break;    
+        case 'select':
+            return <Select onChange={onTextinputChange} onBlur={onTextinputChange} value={value} endpoint={extraconf.endpoint} labels={labels[element_key]} />    
         case 'date':
                  return <DayPicker
             mode="single"
