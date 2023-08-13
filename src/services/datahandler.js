@@ -7,6 +7,7 @@
 let loadedcookie = "loaded";
 
 
+
 let data = [
   {
     id: 1,
@@ -30,6 +31,82 @@ const setCookie = (name, value, days) => {
     document.cookie = name + '=' + (value || '')  + expires + '; path=/';
 }
 
+
+export const buildFilter = (current, key, value) => {
+  const filter = current;
+  const new_filter = filter.map( element => {
+    element.key === key ? element.value = value : element.value = element.value;
+    return element;
+  });
+
+  if(!new_filter.find(element => element.key === key)){
+    new_filter.push({key: key, value: value});
+  }
+
+  return new_filter;
+}
+
+const filterSingleElement = (element, filter) => {
+  let result = true;
+  filter.forEach( filterelement => {
+    if(element[filterelement.key] != filterelement.value){
+      result = false;
+    }
+  });
+  return result;
+}
+
+export const filterData = (data, filter) => {
+
+
+  let new_data = data.filter( element => {
+    return filterSingleElement(element, filter);
+  });
+  return new_data;
+}
+
+
+const labelSearch = (key, value) => {
+  let labels = getLocalLabels();
+  let results;
+  if(key === 'kunde'){
+      results = labels.kunde.find( element => {
+        return element.id === value[0];
+      }
+  );
+ 
+ }
+
+ return results;
+}
+
+export const filterByKey = (data, keyword) => {
+
+  let labels = getLocalLabels();
+  let filterObject = [];
+  let new_data = data.filter( element => {
+    
+
+     filterObject = labelSearch('kunde', element.kunde);
+    
+      if(filterObject.label.toLowerCase().includes(keyword.toLowerCase() ) ){
+      
+        return true;
+      }
+    });
+
+   // if(element.objects.kunde.label.toLowerCase().includes(keyword.toLowerCase()) || element.tankform.toLowerCase().includes(keyword.toLowerCase())){
+
+    //return filterSingleElement(element, filter);
+ console.log(new_data);
+  return new_data;
+}
+
+
+
+
+
+
 export const getEntry = (id) => {
       
   const result = data.filter( element => {
@@ -47,9 +124,7 @@ export const getLabels = () => {
     let labels = [];
 
     fetch('https://app.fenotec.dergoldbroiler.de/wp-json/wp/v2/labels?acf_format=standard').then(res => res.json()).then(data => {
-      
-    
-
+      localStorage.setItem('labels',JSON.stringify(data));
       resolve(data);
     })
   })
@@ -72,9 +147,13 @@ export const getAllJobs = () => {
       data.forEach( element => {
 
         let postmeta = element.acf;
+       
+    //    let acf_object = element.acf_object;
         postmeta.id = element.ID;
-
+        postmeta.objects = element.acf_object;
+       // console.log(postmeta);
         jobmeta.push(postmeta);
+     //   jobmeta.push(acf_object);
       })
 
       resolve(jobmeta);
@@ -91,12 +170,19 @@ export const getFilteredJobs = (filter) => {
 
     let jobmeta = [];
     let fetchurl = 'https://app.fenotec.dergoldbroiler.de/wp-json/wp/v2/jobs?acf_format=standard';
-    
+
     if(filter.kunde){
       var filterkey = 'kunde';
       var filtervalue = filter.kunde;
       fetchurl = 'https://app.fenotec.dergoldbroiler.de/wp-json/wp/v2/jobs?acf_format=standard&'+filterkey+'='+filtervalue;
     }
+
+    if(filter.tankform){
+      var filterkey = 'tankform';
+      var filtervalue = filter.tankform;
+      fetchurl = 'https://app.fenotec.dergoldbroiler.de/wp-json/wp/v2/jobs?acf_format=standard&'+filterkey+'='+filtervalue;
+    }
+
 
 
     fetch(fetchurl).then(res => res.json()).then(data => {
@@ -141,9 +227,10 @@ export const getJobFull = (datasetID) => {
     let fetch_url = 'https://app.fenotec.dergoldbroiler.de/wp-json/wp/v2/job/'+datasetID;
     fetch(fetch_url).then(res => res.json()).then(data => {
       
-      let postmeta = data.acf_objects;
-      postmeta.id = data[0].ID;
+      let postmeta = data.acf_object;
     
+      postmeta.id = data[0].ID;
+
       jobmeta.push(postmeta);
      
       resolve(jobmeta);

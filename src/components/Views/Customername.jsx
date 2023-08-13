@@ -18,6 +18,6 @@ export const Customername = ({id}) => {
         })
     },[customerid,loaded]);
 
-    return (<span>{customername}</span>)
+    return (<span> {customername && customername.substr(0,6)} ..</span>)
 
 }

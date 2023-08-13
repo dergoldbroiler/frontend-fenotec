@@ -1,10 +1,10 @@
-import React, {useState, useEffect, use} from 'react'
+
 import {toggleModal} from '../services/modalhandler';
 import { Editable } from './Editable/Editable';
 
 
 
-export const Singledataset = ({datastore, datasetID,activeDataset, handleUpdate}) => {
+export const Singledataset = ({datastore, datasetID, handleUpdate}) => {
 
     
 
@@ -52,16 +52,16 @@ export const Singledataset = ({datastore, datasetID,activeDataset, handleUpdate}
         <div className="modal fade" id="modal_singledataset" aria-hidden="true" aria-labelledby="exampleModalToggleLabel">
             <div className="modal-dialog modal-dialog-centered modal-fullscreen">
                 <div className="modal-content">
-                    <div className="modal-header pe-5">
+                    <div className="modal-header ">
                     <h1 className="modal-title fs-5" id="exampleModalToggleLabel">{datasetID}</h1>
                     <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" onClick={() => toggleModal('modal_singledataset','hide',datasetID)}></button>
                     </div>
                     <div className="modal-body">
-                        <table className="table table-light table-striped table-secondary">
+                        <table className="table table-light table-striped table-secondary w-100">
                             <tbody>
                         
                        
-                        {
+                        { 
                             datastore &&
                             datastore.map((element, index) => {
                                 if(element.id === datasetID ){
@@ -69,6 +69,7 @@ export const Singledataset = ({datastore, datasetID,activeDataset, handleUpdate}
                                  
                                 }
                             })
+                            
                         }                           
                         </tbody>
                         </table>

@@ -3,9 +3,11 @@ import { Overview } from "../components/Overview";
 import {WindowcloseEvent} from '../components/WindowcloseEvent';
 import {Singledataset} from '../components/Singledataset';
 import { Customerfilter } from "./Filter/Customer";
-import { getAllJobs, getFilteredJobs, updateJob, getJobFull } from "../services/datahandler";
+import { Tankformfilter } from "./Filter/Tankform";
+import { Inputfilter } from "./Filter/Inputfilter";
+import { buildFilter, getAllJobs, updateJob, getJobFull,filterData,filterByKey } from "../services/datahandler";
 import {toggleModal} from '../services/modalhandler';
-import { da } from "date-fns/locale";
+
 
 
 const Monitor = () => {
@@ -14,19 +16,23 @@ const Monitor = () => {
     const [activeDatasetID, setActiveDatasetID] = useState();
     const [locked, setLocked] = useState(false);
     const [activeDataset, setActiveDataset] = useState();
-    const [currentFilter, setCurrentFilter] = useState({});
+    const [currentFilter, setCurrentFilter] = useState([]);
 
 
     /* first fetch */
     useEffect(() => {
       //  if(datastore) return;
-       
-        getFilteredJobs(currentFilter).then(
-                data => { 
-                    setDatastore(data);
-                  //  setActiveDataset(Object.entries(data[0]));
-              
-                }
+      
+      getAllJobs().then(
+        data => { 
+            
+            if(currentFilter.length > 0 ) {
+                setDatastore(filterData(data, currentFilter));
+            } else {
+                setDatastore(data);
+            }
+            
+        }
             )
     }, [currentFilter]);
 
@@ -34,10 +40,17 @@ const Monitor = () => {
     /* refetch every 10 seconds */
     useEffect(() => {
         const interval = setInterval(() => {
-         
-            getFilteredJobs(currentFilter).then(
+            filterByKey(datastore, 'bröcking')
+            getAllJobs().then(
                 data => { 
-                    setDatastore(data)
+                    if(currentFilter.length > 0 ) {
+                        setDatastore(filterData(data, currentFilter));
+                    } else {
+                        setDatastore(data);
+                    }
+
+            
+                    
                 }
             )
 
@@ -52,23 +65,18 @@ const Monitor = () => {
 
         getJobFull(id).then(data => {
             toggleModal('modal_singledataset','show');
-            setDatastore(data);
+         //   setDatastore(data);
             setActiveDatasetID(id);
-           setActiveDataset(Object.entries(data[0]));
+          // setActiveDataset(Object.entries(data[0]));
             
         });
       
     }
 
-    const handleJobUpdate = (e) => {    
-        updateJob(32, 'kunde', 'trötzel').then(data => {
-            console.log('updateJob',data);
-        });
-    }
 
     const handleUpdate = (id, key, value) => {    
         updateJob(id, key, value).then(data => {
-            console.log('updateJob',data);
+          //  console.log('updateJob',data);
         });
     }
 
@@ -76,9 +84,28 @@ const Monitor = () => {
         alert('Dieser Eintrag wird aktuell von einem anderen Benutzer bearbeitet.');
     }
 
-    const updateFilter = (e,filter) => {
-        console.log('updateFilter',e);
-        setCurrentFilter(e);
+
+
+    const localFilter = (key, value) => {
+
+        let new_datastore = datastore.filter((element) => {
+            if(element[key] == value) {
+                return element;
+            }
+        })
+
+        let new_filter = buildFilter(currentFilter, key, value);
+        setCurrentFilter(new_filter);
+        setDatastore(new_datastore);
+    }
+
+    const localFilterByKeyword = (keyword) => {
+
+        let new_datastore = filterByKey(datastore, keyword);
+
+      //  let new_filter = buildFilter(currentFilter, key, value);
+        //setCurrentFilter(new_filter);
+        //setDatastore(new_datastore);
     }
 
     if(!datastore) return (<div>loading...</div>)
@@ -88,8 +115,10 @@ const Monitor = () => {
             {/* unlocks datasets on window close */}
             <WindowcloseEvent /> 
             <Singledataset datastore={datastore} datasetID={activeDatasetID}  handleUpdate={handleUpdate}/>       
-            <div className="d-flex justify-content-between">
-                <Customerfilter onChange={updateFilter} />
+            <div className="d-flex flex-column flex-md-row justify-content-start gap-2 mb-3">
+                <Customerfilter onChange={localFilter} />
+                <Tankformfilter onChange={localFilter} />
+                <Inputfilter onChange={localFilterByKeyword} />
             </div>
             <Overview datastore={datastore} clickHandlerOverview={clickHandlerOverview} clickHandlerRefuse={handeRefusedClick}/>
             
